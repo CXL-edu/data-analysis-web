@@ -1,26 +1,17 @@
-# fumadocs
+# 数据分析Agent
 
-This is a Next.js application generated with
-[Create Fumadocs](https://github.com/fuma-nama/fumadocs).
+详情请访问官网：http://ai-messages.cn/
 
-Run development server:
 
-```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
-```
+<br>
+<br>
+<br>
 
-Open http://localhost:3000 with your browser to see the result.
 
-## Learn More
 
-To learn more about Next.js and Fumadocs, take a look at the following
-resources:
+## 技术栈
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
-  features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [Fumadocs](https://fumadocs.vercel.app) - learn about Fumadocs
+本项目基于以下框架：  
+- 前端框架 [Next.js](https://nextjs.org)
+- 样式库 [Tailwindcss](https://tailwindcss.com/)
+- 文档框架 [Fumadocs](https://fumadocs.vercel.app)
