@@ -33,8 +33,10 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 const navigation = [
   { name: '主页', href: '/', current: false },
   { name: '文档', href: '/docs', current: false },
+  { name: '博客', href: '#', current: false },
   { name: '产品(开发中)', href: '#', current: false },
   { name: '关于我们', href: '/about', current: false },
+  // { name: '特聘专家', href: '#', current: false },
 ]
 
 // function classNames(...classes) {
@@ -63,7 +65,7 @@ export function Navbar() {
             <div className="flex shrink-0 items-center">
               {/* 公司logo */}
               <img
-                alt="数据分析Agent"
+                alt="Your Company"
                 // src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
                 src="../publics/icon3.svg"
                 className="h-8 w-auto"
@@ -99,7 +101,8 @@ export function Navbar() {
 
             {/* Profile dropdown */}
             <Menu as="div" className="relative ml-3">
-              <div>
+              {/*  */}
+              {/* <div>
                 <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">Open user menu</span>
@@ -109,7 +112,7 @@ export function Navbar() {
                     className="size-8 rounded-full"
                   />
                 </MenuButton>
-              </div>
+              </div> */}
               <MenuItems
                 transition
                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
