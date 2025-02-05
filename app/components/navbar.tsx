@@ -1,55 +1,33 @@
 'use client';
 
-// import Link from 'next/link';
-
-// export function Navbar() {
-//   return (
-//     <nav className="fixed top-0 w-full bg-fd-background/95 backdrop-blur supports-[backdrop-filter]:bg-fd-background/60 border-b z-50">
-//       <div className="mx-auto max-w-6xl px-4">
-//         <div className="flex h-16 items-center justify-between">
-//           <Link href="/" className="text-lg font-semibold">
-//             数据分析 Agent
-//           </Link>
-//           <div className="hidden space-x-6 md:flex">
-//             <Link href="/" className="text-fd-foreground/60 hover:text-fd-foreground transition-colors">
-//               主页
-//             </Link>
-//             <Link href="/docs" className="text-fd-foreground/60 hover:text-fd-foreground transition-colors">
-//               文档
-//             </Link>
-//             <Link href="/about" className="text-fd-foreground/60 hover:text-fd-foreground transition-colors">
-//               关于
-//             </Link>
-//           </div>
-//         </div>
-//       </div>
-//     </nav>
-//   );
-// }
-
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuItem, MenuItems } from '@headlessui/react'
-// import { MenuButton } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import Image from 'next/image'
+import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuItem, MenuItems } from '@headlessui/react';
+import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { ReactNode } from 'react';
+import { RootProvider } from 'fumadocs-ui/provider';
 
 const navigation = [
-  { name: '主页', href: '/', current: false },
+  { name: '首页', href: '/', current: false },
   { name: '文档', href: '/docs', current: false },
   { name: '博客', href: '#', current: false },
-  { name: '产品(开发中)', href: '#', current: false },
+  { name: '产品', href: '#', current: false },
   { name: '关于我们', href: '/about', current: false },
-  // { name: '特聘专家', href: '#', current: false },
-]
+];
 
-// function classNames(...classes) {
-//   return classes.filter(Boolean).join(' ')
-// }
+// 需要显示导航栏的路径列表
+const SHOW_NAVBAR_PATHS = [
+  '/docs',
+  '/blog',
+  '/about'
+];
 
 function classNames(...classes: (string | undefined | null | false)[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
-export function Navbar() {
+function NavigationBar() {
   return (
     <Disclosure as="nav" className="bg-gray-800">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -66,14 +44,16 @@ export function Navbar() {
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
               {/* 公司logo */}
-              <Image
-                alt="数源智能"
-                src="/icon.svg"
-                width={32}
-                height={32}
-                className="h-8 w-auto"
-                priority
-              />
+              <Link href="/">
+                <Image
+                  alt="数源智能"
+                  src="/icon.svg"
+                  width={32}
+                  height={32}
+                  className="h-8 w-auto"
+                  priority
+                />
+              </Link>
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
@@ -100,53 +80,8 @@ export function Navbar() {
             >
               <span className="absolute -inset-1.5" />
               <span className="sr-only">View notifications</span>
-              <BellIcon aria-hidden="true" className="size-6" />
+              <BellIcon className="size-6" aria-hidden="true" />
             </button>
-
-            {/* Profile dropdown */}
-            <Menu as="div" className="relative ml-3">
-              {/*  */}
-              {/* <div>
-                <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">Open user menu</span>
-                  <img
-                    alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    className="size-8 rounded-full"
-                  />
-                </MenuButton>
-              </div> */}
-              <MenuItems
-                transition
-                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
-              >
-                <MenuItem>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
-                  >
-                    Your Profile
-                  </a>
-                </MenuItem>
-                <MenuItem>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
-                  >
-                    Settings
-                  </a>
-                </MenuItem>
-                <MenuItem>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
-                  >
-                    Sign out
-                  </a>
-                </MenuItem>
-              </MenuItems>
-            </Menu>
           </div>
         </div>
       </div>
@@ -170,5 +105,19 @@ export function Navbar() {
         </div>
       </DisclosurePanel>
     </Disclosure>
-  )
+  );
+}
+
+export function Navbar({ children }: { children?: ReactNode }) {
+  const pathname = usePathname();
+  const shouldShowNavbar = SHOW_NAVBAR_PATHS.some(path => pathname.startsWith(path));
+
+  return (
+    <>
+      {shouldShowNavbar && <NavigationBar />}
+      <div className={shouldShowNavbar ? "pt-16" : undefined}>
+        {children}
+      </div>
+    </>
+  );
 }

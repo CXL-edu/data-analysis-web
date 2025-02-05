@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 
-import { Navbar } from './components/navbar';
+import { Navbar } from '@/components/navbar';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,7 +22,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <html lang="zh-CN" className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
         <Navbar />
-        <div className="flex-1 pt-16">
+        <div className="flex-1">
           <RootProvider>{children}</RootProvider>
         </div>
       </body>
