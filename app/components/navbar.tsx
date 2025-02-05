@@ -68,7 +68,8 @@ export function Navbar() {
               <img
                 alt="Your Company"
                 // src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
-                src="../publics/icon3.svg"
+                src="/icon.svg"
+                // src="favicon1.svg"
                 className="h-8 w-auto"
               />
             </div>
