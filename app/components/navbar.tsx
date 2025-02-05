@@ -30,6 +30,7 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuItem, MenuItems } from '@headlessui/react'
 // import { MenuButton } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 const navigation = [
   { name: '主页', href: '/', current: false },
@@ -65,12 +66,13 @@ export function Navbar() {
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
               {/* 公司logo */}
-              <img
-                alt="Your Company"
-                // src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
+              <Image
+                alt="数源智能"
                 src="/icon.svg"
-                // src="favicon1.svg"
+                width={32}
+                height={32}
                 className="h-8 w-auto"
+                priority
               />
             </div>
             <div className="hidden sm:ml-6 sm:block">
