@@ -1,6 +1,6 @@
 'use client';
 
-// import Link from 'next/link';
+import Link from 'next/link';
 
 // export default function HomePage() {
 //   return (
@@ -140,10 +140,10 @@ export default function Hero() {
           <div className="hidden sm:mb-8 sm:flex sm:justify-center">
             <div className="relative rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
               产品的详细信息：{' '}
-              <a href="/docs" className="font-semibold text-indigo-600">
+              <Link href="/docs" className="font-semibold text-indigo-600">
                 <span aria-hidden="true" className="absolute inset-0" />
                 阅读详情 <span aria-hidden="true">&rarr;</span>
-              </a>
+              </Link>
             </div>
           </div>
           <div className="text-center">
@@ -159,15 +159,15 @@ export default function Hero() {
                 </p>
                 {/* 按钮 */}
                 <div className="mt-10 flex items-center justify-center gap-x-6">
-                    <a
+                    <Link
                     href="#"
                     className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                     开始体验
-                    </a>
-                    <a href="/docs" className="text-sm/6 font-semibold text-gray-900">
+                    </Link>
+                    <Link href="/docs" className="text-sm/6 font-semibold text-gray-900">
                     查看完整功能 <span aria-hidden="true">→</span>
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

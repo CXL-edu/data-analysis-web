@@ -1,6 +1,7 @@
 # deps
 /node_modules
 /test
+/log
 
 # generated content
 .contentlayer
