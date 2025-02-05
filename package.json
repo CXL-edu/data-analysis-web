@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "dev": "next dev -p 2234",
     "build": "next build",
-    "dev": "next dev -p 1256",
-    "start": "next start",
+    "start": "next start -p 1256",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
