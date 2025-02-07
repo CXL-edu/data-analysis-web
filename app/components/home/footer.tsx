@@ -1,6 +1,7 @@
 'use client';
 // import { FaGithub } from 'react-icons/fa'
 import Link from 'next/link'
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -12,7 +13,7 @@ export default function Footer() {
             <div className="md:flex md:justify-between">
             <div className="mb-6 md:mb-0">
                 <Link href="/" className="flex items-center">
-                    <img src="/favicon1.svg" className="h-8 me-3" alt="数源智能" />
+                    <Image src="/favicon1.svg" className="h-8 me-3" alt="数源智能" />
                     <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">数源智能</span>
                 </Link>
             </div>
