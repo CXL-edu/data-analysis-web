@@ -30,7 +30,7 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
-  { name: '产品', href: '#' },
+  { name: '产品', href: '/product' },
   { name: '文档', href: '/docs' },
   { name: '博客', href: '#' },
   { name: '关于我们', href: '/about' },
@@ -161,7 +161,7 @@ export default function Hero() {
                 {/* 按钮 */}
                 <div className="mt-10 flex items-center justify-center gap-x-6">
                     <Link
-                    href="#"
+                    href="/product"
                     className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                     开始体验

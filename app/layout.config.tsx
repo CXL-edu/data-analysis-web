@@ -17,11 +17,11 @@ export const baseOptions: BaseLayoutProps = {
   //   // can be JSX too!
   //   title: '数据分析AI',
   // },
-  // links: [
-  //   {
-  //     text: '文档',
-  //     url: '/docs',
-  //     active: 'nested-url',
-  //   },
-  // ],
+  links: [
+    {
+      text: '文档',
+      url: '/docs',
+      active: 'nested-url',
+    },
+  ],
 };

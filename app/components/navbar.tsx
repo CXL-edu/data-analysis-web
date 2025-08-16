@@ -11,7 +11,7 @@ const navigation = [
   { name: '首页', href: '/', current: false },
   { name: '文档', href: '/docs', current: false },
   { name: '博客', href: '#', current: false },
-  { name: '产品', href: '#', current: false },
+  { name: '产品', href: '/product', current: false },
   { name: '关于我们', href: '/about', current: false },
 ];
 
@@ -114,9 +114,7 @@ export function Navbar({ children }: { children?: ReactNode }) {
   return (
     <>
       {shouldShowNavbar && <NavigationBar />}
-      <div className={shouldShowNavbar ? "pt-16" : undefined}>
-        {children}
-      </div>
+      {children}
     </>
   );
 }

@@ -55,7 +55,7 @@ export default function Footer() {
         </div>
         <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
         <div className="sm:flex sm:items-center sm:justify-between">
-            <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400"> © 2025 <Link href="#" className="hover:underline">数源智能</Link> | <Link href="https://beian.miit.gov.cn/#/Integrated/index" className="hover:underline">湘ICP备2025100127号-1</Link>
+            <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400"> Copyright © 2025 <Link href="#" className="hover:underline">数源智能</Link> All Rights Reserved. | <Link href="https://beian.miit.gov.cn/#/Integrated/index" className="hover:underline">湘ICP备2025100127号-1</Link>
             </span>
             <div className="flex mt-4 sm:justify-center sm:mt-0">
                 <a href="#" className="text-gray-500 hover:text-gray-900 dark:hover:text-white">
