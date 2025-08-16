@@ -49,6 +49,8 @@ export default function Hero() {
               <Image
                 alt=""
                 src="/homeicon.svg"
+                width={32}
+                height={32}
                 className="h-8 w-auto"
               />
             </a>
@@ -85,6 +87,8 @@ export default function Hero() {
                 <Image
                   alt=""
                   src="/homeicon.svg"
+                  width={32}
+                  height={32}
                   className="h-8 w-auto"
                 />
               </a>
