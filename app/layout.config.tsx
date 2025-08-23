@@ -10,7 +10,19 @@ import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
  */
 export const baseOptions: BaseLayoutProps = {
   nav: {
-    title: <div>🌟数据分析 Agent</div>,
+    // 加上自己的icon '/favicon1.svg'
+    title: (
+      <>
+        <img
+          src="/favicon1.svg"
+          alt="Logo"
+          width={24}
+          height={24}
+          className="inline-block"
+        />
+        数源智能
+      </>
+    ),
   },
   // githubUrl: 'https://github.com/fuma-nama/fumadocs',
   // nav: {
