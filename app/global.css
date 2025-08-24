@@ -3,3 +3,10 @@
 @import 'fumadocs-ui/css/preset.css';
 
 @source '../node_modules/fumadocs-ui/dist/**/*.js';
+
+@layer theme {
+    :root,
+    :host {
+        --color-fd-primary: #1f66f4 !important;
+    }
+}
