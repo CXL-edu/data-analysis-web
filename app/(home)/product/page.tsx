@@ -1,14 +1,10 @@
-import React from "react";
+'use client';
+
+import React from 'react';
+import LayoutWrapper from '../../components/product/LayoutWrapper';
 
 const ProductPage = () => {
-  return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <iframe
-        src="/streamlit/"
-        className="w-full h-full border-none"
-      />
-    </div>
-  );
+  return <LayoutWrapper />;
 };
 
 export default ProductPage;

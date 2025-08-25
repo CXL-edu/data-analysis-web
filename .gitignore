@@ -2,9 +2,14 @@
 /node_modules
 /test
 /log
+/.rules
+/Archived
+/backend
+__pycache__
 
 secret-readme.md
 nohup.out
+todo.md
 content/docs/
 
 *test*
