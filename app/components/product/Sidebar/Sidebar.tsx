@@ -34,9 +34,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse, curren
               <span className="text-lg font-semibold text-gray-800 truncate">数源智能</span>
             </Link>
           ) : (
-            <Link href="/" className="w-10 h-10 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity">
+            // <Link href="/" className="w-10 h-10 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity">
               <img src="/favicon.svg" alt="AI数据助手" className="w-6 h-6" />
-            </Link>
+            // </Link>
           )}
           <div className="flex-shrink-0">
             <SidebarToggle isCollapsed={isCollapsed} onToggle={onToggleCollapse} />
