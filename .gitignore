@@ -4,7 +4,6 @@
 /log
 /.rules
 /Archived
-/backend
 __pycache__
 
 secret-readme.md

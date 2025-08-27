@@ -7,14 +7,15 @@ interface ChatInputProps {
   onSendMessage: (message: string) => void;
   onFileUpload: (file: File) => void;
   isLoading?: boolean;
+  disabled?: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onFileUpload, isLoading = false }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onFileUpload, isLoading = false, disabled = false }) => {
   const [inputValue, setInputValue] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
-    if (!inputValue.trim() || isLoading) return;
+    if (!inputValue.trim() || isLoading || disabled) return;
     onSendMessage(inputValue);
     setInputValue('');
   };
@@ -28,9 +29,17 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onFileUpload, isLo
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    console.log('ChatInput: File selected', { 
+      file: file ? { name: file.name, size: file.size, type: file.type } : null 
+    });
+    
     if (file) {
+      console.log('ChatInput: Calling onFileUpload');
       onFileUpload(file);
     }
+    
+    // Reset the input value to allow selecting the same file again
+    event.target.value = '';
   };
 
   return (
@@ -39,9 +48,9 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onFileUpload, isLo
         <div className="flex items-center space-x-4">
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex-shrink-0 p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-            title="上传文件"
-            disabled={isLoading}
+            className="flex-shrink-0 p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+            title={disabled ? "请先登录" : "上传文件"}
+            disabled={isLoading || disabled}
           >
             <Icon name="attachment" size={20} />
           </button>
@@ -50,16 +59,16 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onFileUpload, isLo
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="输入您想分析的问题..."
+              placeholder={disabled ? "请先登录使用分析功能..." : "输入您想分析的问题..."}
               rows={1}
-              disabled={isLoading}
+              disabled={isLoading || disabled}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none disabled:bg-gray-50 disabled:cursor-not-allowed"
               style={{ minHeight: '44px', maxHeight: '120px' }}
             />
           </div>
           <button
             onClick={handleSend}
-            disabled={!inputValue.trim() || isLoading}
+            disabled={!inputValue.trim() || isLoading || disabled}
             className="flex-shrink-0 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? '发送中...' : '发送'}

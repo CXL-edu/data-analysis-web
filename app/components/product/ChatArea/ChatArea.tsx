@@ -4,16 +4,23 @@ import React, { useState, useEffect } from 'react';
 import ChatMessage, { Message } from './ChatMessage';
 import ChatInput from './ChatInput';
 import Icon from '../common/Icon';
+import { useAuth } from '../../../contexts/AuthContext';
+import AuthModal from '../../auth/AuthModal';
 
 interface ChatAreaProps {
-  onFileUpload: (file: File) => void;
+  onFileUpload?: (file: File) => void;
+  onFileUploadComplete?: (data: any, sessionId: string) => void;
   sessionId: string | null;
   isBackendConnected: boolean;
+  onChartGenerated?: (chartData: string) => void;
+  onSessionCreated?: (sessionId: string) => void;
 }
 
-const ChatArea: React.FC<ChatAreaProps> = ({ onFileUpload, sessionId, isBackendConnected }) => {
+const ChatArea: React.FC<ChatAreaProps> = ({ onFileUpload, onFileUploadComplete, sessionId, isBackendConnected, onChartGenerated, onSessionCreated }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { isAuthenticated, user } = useAuth();
 
   // Listen for new chat events to clear messages
   useEffect(() => {
@@ -30,6 +37,41 @@ const ChatArea: React.FC<ChatAreaProps> = ({ onFileUpload, sessionId, isBackendC
   }, []);
 
   const handleSendMessage = async (content: string) => {
+    // Check authentication first
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    // Create session if none exists
+    let currentSessionId = sessionId;
+    if (!currentSessionId) {
+      try {
+        const { apiService } = await import('../services/api');
+        const newSession = await apiService.createSession('新对话');
+        console.log('ChatArea: Created session for sendMessage:', newSession);
+        currentSessionId = newSession.uuid;
+        console.log('ChatArea: Using sessionId for sendMessage:', currentSessionId);
+        onSessionCreated?.(currentSessionId);
+        
+        // Trigger event to notify SessionManager
+        window.dispatchEvent(new CustomEvent('sessionCreated', { 
+          detail: { sessionId: currentSessionId } 
+        }));
+      } catch (error) {
+        console.error('Failed to create session:', error);
+        const errorMessage: Message = {
+          id: Date.now().toString(),
+          type: 'ai',
+          content: '创建会话失败，请重试',
+          timestamp: new Date(),
+          contentType: 'error'
+        };
+        setMessages(prev => [...prev, errorMessage]);
+        return;
+      }
+    }
+
     const newMessage: Message = {
       id: Date.now().toString(),
       type: 'user',
@@ -40,7 +82,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ onFileUpload, sessionId, isBackendC
     setMessages(prev => [...prev, newMessage]);
     setIsLoading(true);
 
-    if (!isBackendConnected || !sessionId) {
+    if (!isBackendConnected) {
       // Fallback to mock response if backend is not connected
       setTimeout(() => {
         const aiResponse: Message = {
@@ -65,50 +107,164 @@ const ChatArea: React.FC<ChatAreaProps> = ({ onFileUpload, sessionId, isBackendC
     }
 
     try {
-      // Use real backend API
+      // Use SSE streaming API
       const { apiService } = await import('../services/api');
-      const response = await apiService.chatWithData(sessionId, content);
       
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        type: 'ai',
-        content: response.ai_response,
-        timestamp: new Date()
-      };
-      
-      setMessages(prev => [...prev, aiResponse]);
-      setIsLoading(false);
+      await apiService.streamChat(currentSessionId, content, (streamMessage) => {
+        const { type, content: streamContent } = streamMessage;
+        
+        if (type === 'done') {
+          setIsLoading(false);
+          // Update any streaming message to not streaming
+          setMessages(prev => prev.map(msg => 
+            msg.isStreaming ? { ...msg, isStreaming: false } : msg
+          ));
+          return;
+        }
+        
+        if (type === 'error') {
+          setMessages(prev => [...prev, {
+            id: (Date.now() + Math.random()).toString(),
+            type: 'ai',
+            content: streamContent,
+            timestamp: new Date(),
+            contentType: 'error'
+          }]);
+          setIsLoading(false);
+          return;
+        }
+        
+        // Handle image charts - notify parent component
+        if (type === 'image' && streamContent && onChartGenerated) {
+          onChartGenerated(streamContent);
+        }
+        
+        // Create a new message for each stream chunk
+        const newMessage: Message = {
+          id: (Date.now() + Math.random()).toString(),
+          type: 'ai',
+          content: streamContent,
+          timestamp: new Date(),
+          contentType: type as any,
+          isStreaming: false
+        };
+        
+        setMessages(prev => [...prev, newMessage]);
+      });
       
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error('Streaming chat error:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'ai',
-        content: '抱歉，处理您的请求时出现了错误。请稍后再试。',
-        timestamp: new Date()
+        content: `抱歉，处理您的请求时出现了错误：${error}`,
+        timestamp: new Date(),
+        contentType: 'error'
       };
       setMessages(prev => [...prev, errorMessage]);
       setIsLoading(false);
     }
   };
 
-  const handleFileUpload = (file: File) => {
-    onFileUpload(file);
-    const uploadMessage: Message = {
-      id: Date.now().toString(),
-      type: 'user',
-      content: `已上传文件: ${file.name}`,
-      timestamp: new Date()
-    };
-    setMessages(prev => [...prev, uploadMessage]);
+  const handleFileUpload = async (file: File) => {
+    // Check authentication first
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    // Create session if none exists
+    let currentSessionId = sessionId;
+    if (!currentSessionId) {
+      try {
+        const { apiService } = await import('../services/api');
+        const newSession = await apiService.createSession('新对话');
+        console.log('ChatArea: Created session for fileUpload:', newSession);
+        currentSessionId = newSession.uuid;
+        console.log('ChatArea: Using sessionId for fileUpload:', currentSessionId);
+        onSessionCreated?.(currentSessionId);
+        
+        // Trigger event to notify SessionManager
+        window.dispatchEvent(new CustomEvent('sessionCreated', { 
+          detail: { sessionId: currentSessionId } 
+        }));
+        
+        // Wait a bit to ensure parent state is updated
+        await new Promise(resolve => setTimeout(resolve, 100));
+      } catch (error) {
+        console.error('Failed to create session:', error);
+        const errorMessage: Message = {
+          id: Date.now().toString(),
+          type: 'ai',
+          content: '创建会话失败，请重试',
+          timestamp: new Date(),
+          contentType: 'error'
+        };
+        setMessages(prev => [...prev, errorMessage]);
+        return;
+      }
+    }
+
+    try {
+      // Pass the current session ID directly to the upload handler
+      const uploadResponse = await handleFileUploadWithSession(file, currentSessionId);
+      
+      // Notify parent component about successful upload
+      onFileUploadComplete?.(uploadResponse, currentSessionId);
+      
+      const uploadMessage: Message = {
+        id: Date.now().toString(),
+        type: 'user',
+        content: `已上传文件: ${file.name}`,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, uploadMessage]);
+    } catch (error) {
+      console.error('File upload failed:', error);
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        type: 'ai',
+        content: '文件上传失败，请重试',
+        timestamp: new Date(),
+        contentType: 'error'
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    }
+  };
+
+  const handleFileUploadWithSession = async (file: File, sessionId: string) => {
+    console.log('ChatArea: handleFileUploadWithSession called', { 
+      fileName: file.name, 
+      sessionId 
+    });
+    
+    const { apiService } = await import('../services/api');
+    const result = await apiService.uploadFile(file, sessionId);
+    
+    console.log('ChatArea: Upload completed', result);
+    return result;
   };
 
   return (
     <div className="h-full flex flex-col bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4 flex-shrink-0">
-        <h2 className="text-lg font-semibold text-gray-800">AI数据分析助手</h2>
-        <p className="text-sm text-gray-600">上传数据文件开始智能分析</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800">AI数据分析助手</h2>
+            <p className="text-sm text-gray-600">
+              {isAuthenticated ? '上传数据文件开始智能分析' : '请先登录使用分析功能'}
+            </p>
+          </div>
+          {isAuthenticated && user && (
+            <div className="text-right">
+              <p className="text-sm text-gray-600">欢迎, {user.username}</p>
+              {!user.isEmailVerified && (
+                <p className="text-xs text-yellow-600">请验证您的邮箱</p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Messages area */}
@@ -120,13 +276,24 @@ const ChatArea: React.FC<ChatAreaProps> = ({ onFileUpload, sessionId, isBackendC
                 <Icon name="message" className="text-blue-600" size={32} />
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">开始新的对话</h3>
-              <p className="text-gray-600 mb-4">上传您的数据文件，我会帮您进行智能分析</p>
-              <button
-                onClick={() => document.querySelector<HTMLInputElement>('input[type="file"]')?.click()}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                上传数据文件
-              </button>
+              <p className="text-gray-600 mb-4">
+                {isAuthenticated ? '上传您的数据文件，我会帮您进行智能分析' : '请先登录使用分析功能'}
+              </p>
+              {isAuthenticated ? (
+                <button
+                  onClick={() => document.querySelector<HTMLInputElement>('input[type="file"]')?.click()}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  上传数据文件
+                </button>
+              ) : (
+                <button
+                  onClick={() => setShowAuthModal(true)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  登录开始使用
+                </button>
+              )}
             </div>
           </div>
         ) : (
@@ -159,6 +326,14 @@ const ChatArea: React.FC<ChatAreaProps> = ({ onFileUpload, sessionId, isBackendC
         onSendMessage={handleSendMessage}
         onFileUpload={handleFileUpload}
         isLoading={isLoading}
+        disabled={!isAuthenticated}
+      />
+      
+      {/* Authentication Modal */}
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+        initialMode="login"
       />
     </div>
   );

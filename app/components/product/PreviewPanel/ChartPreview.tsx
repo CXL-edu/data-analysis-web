@@ -15,7 +15,7 @@ interface ChartPreviewProps {
 }
 
 const ChartPreview: React.FC<ChartPreviewProps> = ({ charts }) => {
-  if (charts.length === 0) {
+  if (!charts || charts.length === 0) {
     return (
       <div className="text-center py-8">
         <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -115,7 +115,7 @@ const ChartPreview: React.FC<ChartPreviewProps> = ({ charts }) => {
       </div>
       
       {/* 提示信息 - 固定在底部 */}
-      {charts.length > 0 && (
+      {charts && charts.length > 0 && (
         <div className="text-xs text-gray-400 text-center pt-2 border-t border-gray-100 flex-shrink-0">
           💡 点击图表右上角的放大镜图标可查看大图
         </div>

@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python init_database.py)",
+      "Bash(del appapiroutes.py)",
+      "Bash(curl -X GET http://localhost:5000/api/v1/health)",
+      "Read(/f:\\project\\Web\\fumadocs\\app\\contexts/**)",
+      "Read(/f:\\project\\Web\\fumadocs\\app\\components\\product\\services/**)",
+      "Read(/f:\\project\\Web\\fumadocs\\app\\contexts/**)",
+      "Read(/f:\\project\\Web\\fumadocs/**)",
+      "Read(/f:\\project\\Web\\fumadocs/**)",
+      "Read(/f:\\project\\Web\\fumadocs/**)"
+    ],
+    "deny": [],
+    "ask": [],
+    "additionalDirectories": [
+      "f:\\project\\Web\\fumadocs\\backend"
+    ]
+  }
+}

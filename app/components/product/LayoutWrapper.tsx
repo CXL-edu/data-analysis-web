@@ -2,18 +2,19 @@
 
 import React, { useState, useEffect } from 'react';
 import ResizableLayout from './ResizableLayout';
-import Sidebar from './Sidebar/Sidebar';
+import SessionManager from './SessionManager/SessionManager';
 import ChatArea from './ChatArea/ChatArea';
 import PreviewPanel from './PreviewPanel/PreviewPanel';
 import { apiService, DataRow, ChartData } from './services/api';
+import { AuthProvider, useAuth } from '../../contexts/AuthContext';
 
-const LayoutWrapper: React.FC = () => {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+const LayoutContent: React.FC = () => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [uploadedData, setUploadedData] = useState<DataRow[]>([]);
   const [charts, setCharts] = useState<ChartData[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isBackendConnected, setIsBackendConnected] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   // Check backend connection on mount
   useEffect(() => {
@@ -44,10 +45,34 @@ const LayoutWrapper: React.FC = () => {
     }
   };
 
-  const handleFileUpload = async (file: File) => {
+  const handleChartGenerated = (chartData: string) => {
+    // Handle chart data from streaming responses
+    const newChart: ChartData = {
+      type: 'bar', // Default type, could be inferred from context
+      title: `生成的图表 ${charts.length + 1}`,
+      data: [],
+      image: chartData
+    };
+    setCharts(prev => [...prev, newChart]);
+  };
+
+  const handleFileUploadComplete = (uploadResponse: any, sessionId: string) => {
     setPreviewVisible(true);
     
+    // Set preview data if available
+    if (uploadResponse.preview_data) {
+      setUploadedData(uploadResponse.preview_data);
+    } else {
+      setUploadedData([]);
+    }
+    setCharts([]); // Charts will come from streaming responses
+    
+    console.log('File uploaded successfully:', uploadResponse.message);
+  };
+
+  const handleMockFileUpload = async (file: File) => {
     if (!isBackendConnected) {
+      setPreviewVisible(true);
       // Fallback to mock data if backend is not connected
       const mockData = [
         { id: 1, name: '示例数据1', value: 100, category: 'A' },
@@ -65,101 +90,78 @@ const LayoutWrapper: React.FC = () => {
         ];
         setCharts(mockCharts);
       }, 2000);
-      return;
     }
+  };
 
-    try {
-      // Upload file to backend
-      const uploadResponse = await apiService.uploadFile(file);
-      setSessionId(uploadResponse.session_id);
-      setUploadedData(uploadResponse.preview_data);
+  const handleSessionSelect = (newSessionId: string) => {
+    setSessionId(newSessionId);
+    // Clear current data when switching sessions
+    setUploadedData([]);
+    setCharts([]);
+    setPreviewVisible(false);
+  };
 
-      // Generate initial charts
-      setTimeout(async () => {
-        try {
-          if (uploadResponse.columns.length > 0) {
-            const numericColumns = uploadResponse.columns.filter(col => 
-              uploadResponse.stats.dtypes[col] === 'int64' || 
-              uploadResponse.stats.dtypes[col] === 'float64'
-            );
+  const handleNewSession = () => {
+    // Reset state for new session
+    setSessionId(null);
+    setUploadedData([]);
+    setCharts([]);
+    setPreviewVisible(false);
+    // Trigger new chat event
+    window.dispatchEvent(new Event('newChat'));
+  };
 
-            const generatedCharts: ChartData[] = [];
-
-            // Generate histogram for first numeric column
-            if (numericColumns.length > 0) {
-              const chartResponse = await apiService.generateChart(
-                uploadResponse.session_id,
-                'histogram',
-                numericColumns[0]
-              );
-              generatedCharts.push({
-                type: 'bar',
-                title: `${numericColumns[0]} 分布`,
-                data: chartResponse.chart_data,
-                image: chartResponse.chart_image
-              });
-            }
-
-            // Generate correlation heatmap if multiple numeric columns
-            if (numericColumns.length > 1) {
-              const corrResponse = await apiService.generateChart(
-                uploadResponse.session_id,
-                'correlation'
-              );
-              generatedCharts.push({
-                type: 'line',
-                title: '相关性热力图',
-                data: corrResponse.chart_data,
-                image: corrResponse.chart_image
-              });
-            }
-
-            setCharts(generatedCharts);
-          }
-        } catch (error) {
-          console.error('Error generating charts:', error);
-        }
-      }, 1000);
-
-    } catch (error) {
-      console.error('Upload failed:', error);
-      alert('文件上传失败，请检查后端服务是否启动。');
-    }
+  const handleSessionCreated = (newSessionId: string) => {
+    setSessionId(newSessionId);
   };
 
   return (
     <ResizableLayout
       leftPanel={
-        <Sidebar
-          isCollapsed={sidebarCollapsed}
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        <SessionManager
+          currentSessionId={sessionId}
+          onSessionSelect={handleSessionSelect}
+          onNewSession={handleNewSession}
+          onSessionCreated={handleSessionCreated}
         />
       }
       centerPanel={
         <ChatArea
-          onFileUpload={handleFileUpload}
+          onFileUpload={handleMockFileUpload}
+          onFileUploadComplete={handleFileUploadComplete}
           sessionId={sessionId}
           isBackendConnected={isBackendConnected}
+          onChartGenerated={handleChartGenerated}
+          onSessionCreated={handleSessionCreated}
         />
       }
       rightPanel={
         <PreviewPanel
-          isVisible={true}
+          isVisible={previewVisible}
           onToggleCollapse={() => setPreviewVisible(!previewVisible)}
           data={uploadedData}
           charts={charts}
         />
       }
-      leftInitialWidth={sidebarCollapsed ? 64 : 256}
+      leftInitialWidth={320}
       rightInitialWidth={320}
-      leftMinWidth={sidebarCollapsed ? 64 : 200}
+      leftMinWidth={280}
       rightMinWidth={280}
       leftMaxWidth={500}
       rightMaxWidth={600}
       rightVisible={previewVisible}
-      leftCollapsed={sidebarCollapsed}
+      leftCollapsed={false}
       onToggleRightPanel={() => setPreviewVisible(true)}
     />
+  );
+};
+
+// Wrapper component with AuthProvider
+const LayoutWrapper: React.FC = () => {
+  return (
+    <AuthProvider>
+      <LayoutContent />
+    </AuthProvider>
   );
 };
 

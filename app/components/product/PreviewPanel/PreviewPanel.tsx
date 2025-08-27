@@ -30,7 +30,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'data' | 'charts'>('data');
 
-  const columns = data.length > 0 ? Object.keys(data[0]) : [];
+  const columns = data && data.length > 0 ? Object.keys(data[0]) : [];
 
   if (!isVisible) {
     return (
@@ -102,7 +102,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
       </div>
 
       {/* Footer with stats */}
-      {data.length > 0 && (
+      {data && data.length > 0 && (
         <div className="border-t border-gray-200 p-4">
           <div className="text-xs text-gray-500 space-y-1">
             <div className="flex items-center justify-between">
@@ -115,7 +115,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
             </div>
             <div className="flex items-center justify-between">
               <span>图表数:</span>
-              <span className="font-medium">{charts.length}</span>
+              <span className="font-medium">{charts?.length || 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <span>最后更新:</span>

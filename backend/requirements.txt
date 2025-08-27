@@ -1,0 +1,39 @@
+# AI Data Assistant Backend Dependencies
+
+# Flask Framework
+Flask
+Flask-CORS
+Flask-RESTX
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-JWT-Extended
+Flask-Mail
+
+# Database
+psycopg2-binary
+SQLAlchemy
+alembic
+
+# Authentication & Security
+bcrypt
+PyJWT
+Werkzeug
+
+# Data Processing
+pandas
+numpy
+openpyxl
+xlrd
+odfpy
+
+# Data Visualization
+matplotlib
+seaborn
+
+# Utilities
+python-dotenv
+marshmallow
+email-validator
+
+# Development Dependencies
+requests
