@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import ResizableLayout from './ResizableLayout';
-import SessionManager from './SessionManager/SessionManager';
+import Sidebar from './Sidebar/Sidebar';
 import ChatArea from './ChatArea/ChatArea';
 import PreviewPanel from './PreviewPanel/PreviewPanel';
 import { apiService, DataRow, ChartData } from './services/api';
@@ -14,6 +14,7 @@ const LayoutContent: React.FC = () => {
   const [charts, setCharts] = useState<ChartData[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isBackendConnected, setIsBackendConnected] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { isAuthenticated } = useAuth();
 
   // Check backend connection on mount
@@ -118,11 +119,9 @@ const LayoutContent: React.FC = () => {
   return (
     <ResizableLayout
       leftPanel={
-        <SessionManager
-          currentSessionId={sessionId}
-          onSessionSelect={handleSessionSelect}
-          onNewSession={handleNewSession}
-          onSessionCreated={handleSessionCreated}
+        <Sidebar
+          isCollapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
       }
       centerPanel={
@@ -150,7 +149,7 @@ const LayoutContent: React.FC = () => {
       leftMaxWidth={500}
       rightMaxWidth={600}
       rightVisible={previewVisible}
-      leftCollapsed={false}
+      leftCollapsed={sidebarCollapsed}
       onToggleRightPanel={() => setPreviewVisible(true)}
     />
   );

@@ -9,7 +9,9 @@
       "Read(/f:\\project\\Web\\fumadocs\\app\\contexts/**)",
       "Read(/f:\\project\\Web\\fumadocs/**)",
       "Read(/f:\\project\\Web\\fumadocs/**)",
-      "Read(/f:\\project\\Web\\fumadocs/**)"
+      "Read(/f:\\project\\Web\\fumadocs/**)",
+      "Read(c:\\Users\\Lenovo\\xwechat_files\\wxid_vmkbl9u2h7th22_1fa1\\temp\\RWTemp\\2025-08\\9e20f478899dc29eb19741386f9343c8/**)",
+      "Bash(git log --oneline -10)"
     ],
     "deny": [],
     "ask": [],

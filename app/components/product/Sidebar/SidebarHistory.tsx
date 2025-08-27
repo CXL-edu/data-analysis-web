@@ -25,7 +25,7 @@ const SidebarHistory: React.FC<SidebarHistoryProps> = ({ isCollapsed }) => {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="px-4">
+      <div className={`${isCollapsed ? 'px-2' : 'px-4'}`}>
         {!isCollapsed ? (
           <div className="text-sm font-medium text-gray-600 mb-4 flex items-center space-x-2">
             <Icon name="history" size={16} />
@@ -45,7 +45,7 @@ const SidebarHistory: React.FC<SidebarHistoryProps> = ({ isCollapsed }) => {
             {chatHistory.map((chat) => (
             <div
               key={chat.id}
-              className={`${isCollapsed ? 'px-2 py-3' : 'px-3 py-3'} bg-gray-50 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors`}
+              className={`${isCollapsed ? 'p-3' : 'px-3 py-3'} bg-gray-50 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors`}
             >
               {isCollapsed ? (
                 <div className="flex items-center justify-center">

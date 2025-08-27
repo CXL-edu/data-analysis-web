@@ -31,13 +31,13 @@ const ResizableLayout: React.FC<ResizableLayoutProps> = ({
   leftCollapsed = false,
   onToggleRightPanel
 }) => {
-  const [leftWidth, setLeftWidth] = useState(leftCollapsed ? 64 : leftInitialWidth);
+  const [leftWidth, setLeftWidth] = useState(leftCollapsed ? 56 : leftInitialWidth);
   const [rightWidth, setRightWidth] = useState(rightInitialWidth);
   const [isResizingLeft, setIsResizingLeft] = useState(false);
   const [isResizingRight, setIsResizingRight] = useState(false);
   
   React.useEffect(() => {
-    setLeftWidth(leftCollapsed ? 64 : leftInitialWidth);
+    setLeftWidth(leftCollapsed ? 56 : leftInitialWidth);
   }, [leftCollapsed, leftInitialWidth]);
   
   const leftResizerRef = useRef<HTMLDivElement>(null);
@@ -45,17 +45,17 @@ const ResizableLayout: React.FC<ResizableLayoutProps> = ({
 
   const handleMouseDown = useCallback((side: 'left' | 'right') => (e: React.MouseEvent) => {
     e.preventDefault();
-    if (side === 'left' && !leftCollapsed) {
+    if (side === 'left') {
       setIsResizingLeft(true);
     } else if (side === 'right') {
       setIsResizingRight(true);
     }
-  }, [leftCollapsed]);
+  }, []);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (isResizingLeft) {
       const newWidth = Math.min(
-        Math.max(e.clientX, leftMinWidth),
+        Math.max(e.clientX, 56), // 最小宽度为折叠态的56px
         leftMaxWidth
       );
       setLeftWidth(newWidth);
@@ -68,7 +68,7 @@ const ResizableLayout: React.FC<ResizableLayoutProps> = ({
       );
       setRightWidth(newWidth);
     }
-  }, [isResizingLeft, isResizingRight, leftMinWidth, leftMaxWidth, rightMinWidth, rightMaxWidth, rightVisible]);
+  }, [isResizingLeft, isResizingRight, leftMaxWidth, rightMinWidth, rightMaxWidth, rightVisible]);
 
   const handleMouseUp = useCallback(() => {
     setIsResizingLeft(false);
@@ -96,24 +96,26 @@ const ResizableLayout: React.FC<ResizableLayoutProps> = ({
       {/* Left Panel */}
       <div 
         className="bg-white shadow-sm border-r border-gray-200 flex flex-col transition-none"
-        style={{ width: `${leftWidth}px`, minWidth: `${leftMinWidth}px`, maxWidth: `${leftMaxWidth}px` }}
+        style={{ 
+          width: `${leftWidth}px`, 
+          minWidth: leftCollapsed ? '56px' : `${leftMinWidth}px`, 
+          maxWidth: `${leftMaxWidth}px` 
+        }}
       >
         {leftPanel}
       </div>
 
-      {/* Left Resizer - Only show when not collapsed */}
-      {!leftCollapsed && (
-        <div
-          ref={leftResizerRef}
-          className={`w-1 bg-gray-200 hover:bg-blue-400 cursor-col-resize flex-shrink-0 transition-all duration-200 relative group ${
-            isResizingLeft ? 'bg-blue-500 w-1' : ''
-          }`}
-          onMouseDown={handleMouseDown('left')}
-        >
-          <div className="absolute inset-0 w-3 -mx-1" />
-          <div className="absolute inset-y-0 left-0 w-1 bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
-        </div>
-      )}
+      {/* Left Resizer - Always show */}
+      <div
+        ref={leftResizerRef}
+        className={`w-1 bg-gray-200 hover:bg-blue-400 cursor-col-resize flex-shrink-0 transition-all duration-200 relative group ${
+          isResizingLeft ? 'bg-blue-500 w-1' : ''
+        }`}
+        onMouseDown={handleMouseDown('left')}
+      >
+        <div className="absolute inset-0 w-3 -mx-1" />
+        <div className="absolute inset-y-0 left-0 w-1 bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
+      </div>
 
       {/* Center Panel */}
       <div className="flex-1 min-w-0 relative">

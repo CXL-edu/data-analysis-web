@@ -194,20 +194,6 @@ const SessionManager: React.FC<SessionManagerProps> = ({
         )}
       </div>
 
-      {/* User Status */}
-      {user && !user.isEmailVerified && (
-        <div className="p-4 border-t border-gray-200 bg-yellow-50">
-          <div className="flex items-start">
-            <Icon name="warning" className="text-yellow-600 mr-2 mt-0.5" size={16} />
-            <div>
-              <p className="text-xs text-yellow-800 font-medium">邮箱未验证</p>
-              <p className="text-xs text-yellow-700 mt-1">
-                请检查您的邮箱并点击验证链接
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

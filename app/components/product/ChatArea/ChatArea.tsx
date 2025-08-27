@@ -256,14 +256,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({ onFileUpload, onFileUploadComplete,
               {isAuthenticated ? '上传数据文件开始智能分析' : '请先登录使用分析功能'}
             </p>
           </div>
-          {isAuthenticated && user && (
-            <div className="text-right">
-              <p className="text-sm text-gray-600">欢迎, {user.username}</p>
-              {!user.isEmailVerified && (
-                <p className="text-xs text-yellow-600">请验证您的邮箱</p>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
