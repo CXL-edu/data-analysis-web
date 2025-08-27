@@ -13,7 +13,7 @@ const SidebarUserInfo: React.FC<SidebarUserInfoProps> = ({ isCollapsed }) => {
 
   if (!isAuthenticated || !user) {
     return (
-      <div className={`border-t border-gray-200 ${isCollapsed ? 'px-1 py-2' : 'p-4'}`}>
+      <div className={`border-t border-gray-200 bg-white ${isCollapsed ? 'px-1 py-2' : 'p-4'}`}>
         {isCollapsed ? (
           <div className="flex justify-center">
             <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
@@ -36,7 +36,7 @@ const SidebarUserInfo: React.FC<SidebarUserInfoProps> = ({ isCollapsed }) => {
   }
 
   return (
-    <div className={`border-t border-gray-200 ${isCollapsed ? 'px-1 py-2' : 'p-4'}`}>
+    <div className={`border-t border-gray-200 bg-white ${isCollapsed ? 'px-1 py-2' : 'p-4'}`}>
       {isCollapsed ? (
         <div className="flex justify-center">
           <button

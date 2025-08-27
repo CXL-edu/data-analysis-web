@@ -10,3 +10,15 @@
         --color-fd-primary: #1f66f4 !important;
     }
 }
+
+@layer utilities {
+    /* Hide scrollbar for webkit browsers */
+    .hide-scrollbar {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+    }
+    
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+}

@@ -11,16 +11,18 @@ import Icon from '../common/Icon';
 interface SidebarProps {
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  currentSessionId?: string | null;
+  onSessionSelect?: (sessionId: string) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse, currentSessionId, onSessionSelect }) => {
   const [showHistoryItems, setShowHistoryItems] = useState(false);
 
   // 固定icon尺寸
   const iconSize = 16;
 
   return (
-    <div className="h-full bg-white flex flex-col transition-all duration-300">
+    <div className="h-screen bg-white flex flex-col transition-all duration-300 overflow-hidden">
       {/* Header section with logo and toggle */}
       <div className={`${isCollapsed ? 'px-1 py-2' : 'p-4'} flex-shrink-0`}>
         <div className={`flex items-center ${isCollapsed ? 'flex-col space-y-2' : 'justify-between mb-6'}`}>
@@ -44,73 +46,82 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
         {!isCollapsed && <SidebarActions isCollapsed={isCollapsed} />}
       </div>
 
-      {/* Collapsed state: centered icons */}
+      {/* Collapsed state: fixed action buttons and history */}
       {isCollapsed && (
-        <div className="flex-1 flex flex-col items-center justify-start pt-2">
-          {/* Main action buttons - always centered */}
-          <div className="space-y-3">
-            {/* New Chat Icon */}
-            <div className="flex justify-center">
-              <button 
-                onClick={() => {
-                  const event = new CustomEvent('newChat');
-                  window.dispatchEvent(event);
-                }}
-                className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
-                title="新建聊天"
-              >
-                <Icon name="newChat" size={iconSize} />
-              </button>
-            </div>
-
-            {/* Knowledge Base Icon */}
-            <div className="flex justify-center">
-              <button 
-                className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-                title="知识库"
-              >
-                <Icon name="database" size={iconSize} />
-              </button>
-            </div>
-
-            {/* History Icon */}
-            <div className="flex justify-center">
-              <button 
-                onClick={() => setShowHistoryItems(!showHistoryItems)}
-                className={`p-2 rounded-lg ${showHistoryItems ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} transition-colors`}
-                title={showHistoryItems ? "隐藏历史记录" : "显示历史记录"}
-              >
-                <Icon name="history" size={iconSize} />
-              </button>
-            </div>
-          </div>
-          
-          {/* History items - directly below history button */}
-          {showHistoryItems && (
-            <div className="space-y-2 pt-2">
-              {[
-                { id: '1', title: 'merchant_category_code分析' },
-                { id: '2', title: '销售数据趋势分析' },
-                { id: '3', title: '用户行为分析' }
-              ].map((chat) => (
-                <div
-                  key={chat.id}
-                  className="p-1.5 bg-gray-50 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors flex justify-center"
-                  title={chat.title}
+        <div className="flex-shrink-0 pt-2 pb-4">
+          <div className="flex flex-col items-center">
+            <div className="space-y-3">
+              {/* New Chat Icon */}
+              <div className="flex justify-center">
+                <button 
+                  onClick={() => {
+                    const event = new CustomEvent('newChat');
+                    window.dispatchEvent(event);
+                  }}
+                  className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                  title="新建聊天"
                 >
-                  <Icon name="chat" className="text-gray-600" size={iconSize} />
-                </div>
-              ))}
+                  <Icon name="newChat" size={iconSize} />
+                </button>
+              </div>
+
+              {/* Knowledge Base Icon */}
+              <div className="flex justify-center">
+                <button 
+                  className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                  title="知识库"
+                >
+                  <Icon name="database" size={iconSize} />
+                </button>
+              </div>
+
+              {/* History Icon */}
+              <div className="flex justify-center">
+                <button 
+                  onClick={() => setShowHistoryItems(!showHistoryItems)}
+                  className={`p-2 rounded-lg ${showHistoryItems ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} transition-colors`}
+                  title={showHistoryItems ? "隐藏历史记录" : "显示历史记录"}
+                >
+                  <Icon name="history" size={iconSize} />
+                </button>
+              </div>
             </div>
-          )}
+
+            {/* History items directly below history button */}
+            {showHistoryItems && (
+              <div className="mt-3">
+                <div 
+                  className="overflow-y-auto hide-scrollbar flex flex-col items-center" 
+                  style={{ maxHeight: '200px' }}
+                >
+                  <SidebarHistory 
+                    isCollapsed={true} 
+                    currentSessionId={currentSessionId}
+                    onSessionSelect={onSessionSelect}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      {/* Expanded state: History section */}
-      {!isCollapsed && <SidebarHistory isCollapsed={isCollapsed} />}
+      {/* Middle flexible space */}
+      {isCollapsed && <div className="flex-1"></div>}
+
+      {/* History section - only for expanded state */}
+      {!isCollapsed && (
+        <SidebarHistory 
+          isCollapsed={false} 
+          currentSessionId={currentSessionId}
+          onSessionSelect={onSessionSelect}
+        />
+      )}
 
       {/* User info section */}
-      <SidebarUserInfo isCollapsed={isCollapsed} />
+      <div className="flex-shrink-0">
+        <SidebarUserInfo isCollapsed={isCollapsed} />
+      </div>
     </div>
   );
 };

@@ -122,6 +122,8 @@ const LayoutContent: React.FC = () => {
         <Sidebar
           isCollapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          currentSessionId={sessionId}
+          onSessionSelect={handleSessionSelect}
         />
       }
       centerPanel={
