@@ -30,13 +30,18 @@ class Config:
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     JWT_ALGORITHM = 'HS256'
     
-    # Mail settings
-    MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'localhost'
-    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 587)
+    # Mail settings（鉴权信息仅从环境变量读取，不写死在代码中）
+    MAIL_SERVER = os.environ.get('MAIL_SERVER') or os.environ.get('SMTP_HOST') or 'localhost'
+    MAIL_PORT = int(os.environ.get('MAIL_PORT') or os.environ.get('SMTP_PORT') or 587)
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in ['true', 'on', '1']
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or 'noreply@fumadocs.com'
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or os.environ.get('SMTP_FROM_EMAIL')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or os.environ.get('SMTP_PASSWORD')
+    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or os.environ.get('SMTP_FROM_EMAIL') or 'noreply@fumadocs.com'
+    # 阿里云等 SMTP 专用变量（与 MAIL_* 二选一即可）
+    SMTP_HOST = os.environ.get('SMTP_HOST')
+    SMTP_PORT = os.environ.get('SMTP_PORT')
+    SMTP_FROM_EMAIL = os.environ.get('SMTP_FROM_EMAIL')
+    SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD')
     
     # Upload settings
     UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'storage', 'uploads')
