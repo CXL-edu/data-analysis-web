@@ -17,16 +17,24 @@ export default function Footer() {
                     <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">数源智能</span>
                 </Link>
             </div>
-            <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3 text-center">
+            <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-4 text-center">
+                <div>
+                    <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">产品</h2>
+                    <ul className="text-gray-500 dark:text-gray-400 font-medium">
+                        <li className="mb-4">
+                            <Link href="/product" className="hover:underline">表格数据分析</Link>
+                        </li>
+                        <li className="mb-4">
+                            <a href="/wisdom-prompt/" className="hover:underline">智能问答 WisdomPrompt</a>
+                        </li>
+                    </ul>
+                </div>
                 <div>
                     <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">资源</h2>
                     <ul className="text-gray-500 dark:text-gray-400 font-medium">
                         <li className="mb-4">
                             <Link href="/docs" className="hover:underline">文档</Link>
                         </li>
-                        {/* <li>
-                            <Link href="https://tailwindcss.com/" className="hover:underline" target="_blank" rel="noopener noreferrer">Tailwind CSS</Link>
-                        </li> */}
                     </ul>
                 </div>
                 <div>

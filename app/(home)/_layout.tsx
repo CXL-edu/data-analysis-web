@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react';
-import { HomeLayout } from 'fumadocs-ui/layouts/home';
-import { baseOptions } from '@/app/layout.config';
 
-// 现在禁用了这个文件
+// 不再使用 fumadocs HomeLayout，避免搜索/主题等依赖导致客户端报错；首页导航由 Hero 自带
 export default function Layout({ children }: { children: ReactNode }) {
-  return <HomeLayout {...baseOptions}>{children}</HomeLayout>;
+  return <>{children}</>;
 }

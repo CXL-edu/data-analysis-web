@@ -9,9 +9,9 @@ import { ReactNode } from 'react';
 
 const navigation = [
   { name: '首页', href: '/', current: false },
+  { name: '数据分析', href: '/product', current: false },
+  { name: '智能问答', href: '/wisdom-prompt/', current: false },
   { name: '文档', href: '/docs', current: false },
-  { name: '博客', href: '#', current: false },
-  { name: '产品', href: '/product', current: false },
   { name: '关于我们', href: '/about', current: false },
 ];
 
@@ -41,9 +41,8 @@ function NavigationBar() {
             </DisclosureButton>
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex shrink-0 items-center">
-              {/* 公司logo */}
-              <Link href="/">
+            <div className="flex shrink-0 items-center gap-2">
+              <Link href="/" className="flex items-center gap-2">
                 <Image
                   alt="数源智能"
                   src="/icon.svg"
@@ -52,6 +51,7 @@ function NavigationBar() {
                   className="h-8 w-auto"
                   priority
                 />
+                <span className="text-sm font-semibold text-white">数源智能</span>
               </Link>
             </div>
             <div className="hidden sm:ml-6 sm:block">

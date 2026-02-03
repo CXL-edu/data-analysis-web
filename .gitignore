@@ -15,6 +15,14 @@ content/docs/
 *tencent*
 nginx.conf
 
+# 反向代理/部署用配置（含其他服务 WisdomPrompt、streamlit 等，每台机器不同）
+nginx.443.conf
+nginx.inline-backup.conf
+DEPLOY_NGINX_WISDOMPROMPT.md
+
+# 本地/编辑器
+.claude/
+
 # generated content
 .contentlayer
 .content-collections
@@ -42,3 +50,5 @@ yarn-error.log*
 .vercel
 next-env.d.ts
 sex.sh
+
+
